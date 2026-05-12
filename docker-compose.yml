@@ -1,0 +1,70 @@
+name: kafka-course
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:8.1.2
+    restart: on-failure
+    ports:
+      - 9092:9092
+      - 5083:5083
+      - 5084:5084
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_OPTS: >
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+      KAFKA_JMX_OPTS: >
+        -Dcom.sun.management.jmxremote.port=5084
+        -Dcom.sun.management.jmxremote.authenticate=false
+        -Dcom.sun.management.jmxremote.ssl=false
+        -Djava.rmi.server.hostname=kafka
+        -Dcom.sun.management.jmxremote.rmi.port=5084
+    volumes:
+      - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    hostname: kafka-ui
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    volumes:
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    restart: on-failure
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+    depends_on:
+      - kafka
+
+  grafana:
+    image: grafana/grafana:13.0
+    restart: on-failure
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana_data:

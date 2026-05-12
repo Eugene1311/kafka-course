@@ -1,0 +1,11 @@
+auth:
+  type: DISABLED
+kafka:
+  clusters:
+  - bootstrapServers: kafka:29092
+    metrics:
+      port: 5084
+      type: JMX
+    name: Kafka
+    properties: {}
+    readOnly: false
