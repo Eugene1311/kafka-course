@@ -27,7 +27,7 @@ services:
         -Dcom.sun.management.jmxremote.port=5084
         -Dcom.sun.management.jmxremote.authenticate=false
         -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka
+        -Djava.rmi.server.hostname=localhost
         -Dcom.sun.management.jmxremote.rmi.port=5084
     volumes:
       - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
