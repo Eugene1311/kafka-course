@@ -7,7 +7,7 @@ services:
     ports:
       - 9092:9092
       - 15083:5083
-      - 5084:5084
+      - 15084:15084
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
@@ -24,11 +24,11 @@ services:
       KAFKA_OPTS: >
         -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
-        -Dcom.sun.management.jmxremote.port=5084
+        -Dcom.sun.management.jmxremote.port=15084
+        -Dcom.sun.management.jmxremote.rmi.port=15084
         -Dcom.sun.management.jmxremote.authenticate=false
         -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka-1
-        -Dcom.sun.management.jmxremote.rmi.port=5084
+        -Djava.rmi.server.hostname=localhost
     volumes:
       - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
 
@@ -38,7 +38,7 @@ services:
     ports:
       - 9093:9093
       - 25083:5083
-      - 25084:5084
+      - 25084:25084
     environment:
       KAFKA_NODE_ID: 2
       KAFKA_PROCESS_ROLES: 'broker,controller'
@@ -55,11 +55,11 @@ services:
       KAFKA_OPTS: >
         -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
-        -Dcom.sun.management.jmxremote.port=5084
+        -Dcom.sun.management.jmxremote.port=25084
+        -Dcom.sun.management.jmxremote.rmi.port=25084
         -Dcom.sun.management.jmxremote.authenticate=false
         -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka-2
-        -Dcom.sun.management.jmxremote.rmi.port=5084
+        -Djava.rmi.server.hostname=localhost
     volumes:
       - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
 
@@ -69,7 +69,7 @@ services:
     ports:
       - 9094:9094
       - 35083:5083
-      - 35084:5084
+      - 35084:35084
     environment:
       KAFKA_NODE_ID: 3
       KAFKA_PROCESS_ROLES: 'broker,controller'
@@ -86,11 +86,11 @@ services:
       KAFKA_OPTS: >
         -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
-        -Dcom.sun.management.jmxremote.port=5084
+        -Dcom.sun.management.jmxremote.port=35084
+        -Dcom.sun.management.jmxremote.rmi.port=35084
         -Dcom.sun.management.jmxremote.authenticate=false
         -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka-3
-        -Dcom.sun.management.jmxremote.rmi.port=5084
+        -Djava.rmi.server.hostname=localhost
     volumes:
       - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
 
