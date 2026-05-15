@@ -1,4 +1,4 @@
-name: kafka-course
+name: kafka-course-multi-node-cluster
 
 services:
   kafka-1:

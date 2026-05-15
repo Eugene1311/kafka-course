@@ -1,4 +1,4 @@
-name: kafka-course
+name: kafka-course-monitoring
 
 services:
   kafka:
