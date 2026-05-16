@@ -8,9 +8,9 @@ scrape_configs:
     honor_timestamps: true
     static_configs:
       - targets: [
-        'kafka-1:5083',
-        'kafka-2:5083',
-        'kafka-3:5083'
+        'kafka-1:15083',
+        'kafka-2:25083',
+        'kafka-3:35083'
       ]
         labels:
           env: "dev"

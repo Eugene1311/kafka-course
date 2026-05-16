@@ -6,7 +6,7 @@ services:
     restart: on-failure
     ports:
       - 9092:9092
-      - 15083:5083
+      - 15083:15083
       - 15084:15084
     environment:
       KAFKA_NODE_ID: 1
@@ -21,8 +21,10 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_BROKER_RACK: "rack-1"
+#      KAFKA_UNCLEAN_LEADER_ELECTION: true
       KAFKA_OPTS: >
-        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=15083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
         -Dcom.sun.management.jmxremote.port=15084
         -Dcom.sun.management.jmxremote.rmi.port=15084
@@ -37,7 +39,7 @@ services:
     restart: on-failure
     ports:
       - 9093:9093
-      - 25083:5083
+      - 25083:25083
       - 25084:25084
     environment:
       KAFKA_NODE_ID: 2
@@ -52,8 +54,10 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_BROKER_RACK: "rack-2"
+#      KAFKA_UNCLEAN_LEADER_ELECTION: true
       KAFKA_OPTS: >
-        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=25083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
         -Dcom.sun.management.jmxremote.port=25084
         -Dcom.sun.management.jmxremote.rmi.port=25084
@@ -68,7 +72,7 @@ services:
     restart: on-failure
     ports:
       - 9094:9094
-      - 35083:5083
+      - 35083:35083
       - 35084:35084
     environment:
       KAFKA_NODE_ID: 3
@@ -83,8 +87,10 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_BROKER_RACK: "rack-3"
+#      KAFKA_UNCLEAN_LEADER_ELECTION: true
       KAFKA_OPTS: >
-        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=35083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
         -Dcom.sun.management.jmxremote.port=35084
         -Dcom.sun.management.jmxremote.rmi.port=35084
