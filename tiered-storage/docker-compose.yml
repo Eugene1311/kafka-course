@@ -1,0 +1,40 @@
+name: kafka-course-topics
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:8.1.2
+    restart: on-failure
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      # Tiered storage settings
+      KAFKA_REMOTE_LOG_STORAGE_SYSTEM_ENABLE: true
+      KAFKA_REMOTE_LOG_METADATA_MANAGER_LISTENER_NAME: PLAINTEXT
+      KAFKA_REMOTE_LOG_STORAGE_MANAGER_CLASS_NAME: org.apache.kafka.server.log.remote.storage.LocalTieredStorage
+      KAFKA_REMOTE_LOG_STORAGE_MANAGER_CLASS_PATH: /etc/kafka-storage/kafka-storage-4.3.0-test.jar
+      KAFKA_RSM_CONFIG_DIR: /tmp/kafka-remote-storage
+      KAFKA_RLMM_CONFIG_REMOTE_LOG_METADATA_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 1000
+    volumes:
+      - ./kafka-storage:/etc/kafka-storage
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    volumes:
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
