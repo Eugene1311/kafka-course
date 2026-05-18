@@ -20,7 +20,7 @@ kafka-topics --create --topic test --replica-assignment 1:2:3 --bootstrap-server
 ```shell
 kafka-console-consumer --bootstrap-server kafka-1:29092 \
   --topic test --from-beginning \
-  --consumer-property client.rack=rack-1
+  --consumer-property client.rack=rack-2
 ```
 
 # Unclean leader election example
