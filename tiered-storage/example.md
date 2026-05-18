@@ -2,7 +2,7 @@
 
 #### Create topic
 ```shell
-kafka-topics.sh --create --topic tieredTopic --bootstrap-server localhost:9092 \
+kafka-topics --create --topic tieredTopic --bootstrap-server localhost:9092 \
     --config remote.storage.enable=true --config local.retention.ms=1000 --config retention.ms=3600000 \
     --config segment.bytes=1048576 --config file.delete.delay.ms=1000
 ```
