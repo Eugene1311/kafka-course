@@ -110,10 +110,10 @@ kafka-configs.sh --bootstrap-server localhost:9093 --entity-type brokers --entit
 - Создаём файл server-ssl-auth.properties
 
 listeners=SSL://localhost:9093
-ssl.keystore.location=/opt/kafka/private/server.keystore.jks
+ssl.keystore.location=path/to/server.keystore.jks
 ssl.keystore.password=password
 ssl.key.password=password
-ssl.truststore.location=/opt/kafka/private/server.truststore.jks
+ssl.truststore.location=path/to/server.truststore.jks
 ssl.truststore.password=password
 security.inter.broker.protocol=SSL
 ssl.client.auth=required
