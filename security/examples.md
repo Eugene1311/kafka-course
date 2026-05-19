@@ -338,8 +338,13 @@ allow.everyone.if.no.acl.found=true
 super.users=User:client
 
 ## Запускаем ZooKeeper и брокер Kafka
+```shell
 KAFKA_OPTS="-Djava.security.auth.login.config=configs/zookeeper_jaas.conf" zookeeper-server-start.sh configs/zookeeper-sasl.properties
-KAFKA_OPTS="-Djava.security.auth.login.config=configs/kafka_server_jaas.conf" kafka-server-start.sh configs/server-acl-ssl.properties
+```
+```shell
+KAFKA_OPTS="-Djava.security.auth.login.config=configs/kafka_server_jaas.conf" \
+  kafka-server-start.sh configs/server-acl-ssl.properties
+```
 
 ## Подключаемся клиентом с аутентификацией SASL_SSL и создаём ACL
 kafka-topics.sh --list --bootstrap-server localhost:9094 --command-config configs/client-sasl-ssl.properties
@@ -394,5 +399,25 @@ kafka-console-producer.sh --bootstrap-server localhost:9094 --topic test --produ
 kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic test --consumer.config configs/client-bob-ssl.properties -from-beginning
 kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic test --consumer.config configs/client-alice-ssl.properties -from-beginning
 kafka-console-consumer.sh --bootstrap-server localhost:9094 --topic test --consumer.config configs/client-a2-ssl.properties -from-beginning
+
+## Останавливаем брокер и ZooKeeper
+
+# Аудит
+## Выставляем уровень логирования для log4j.logger.kafka.authorizer.logger и log4j.logger.kafka.request.logger в файле server-audit-log4j.properties
+
+## Запускаем ZooKeeper и брокер Kafka
+```shell
+KAFKA_OPTS="-Djava.security.auth.login.config=configs/zookeeper_jaas.conf" zookeeper-server-start.sh configs/zookeeper-sasl.properties
+```
+```shell
+KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:./configs/server-audit-log4j.properties"  \
+  KAFKA_OPTS="-Djava.security.auth.login.config=configs/kafka_server_jaas.conf" \
+  kafka-server-start.sh configs/server-acl-ssl.properties
+```
+
+## Выполняем запросы и смотрим логи
+kafka-topics.sh --list --bootstrap-server localhost:9094 --command-config configs/client-bob-ssl.properties
+kafka-topics.sh --list --bootstrap-server localhost:9094 --command-config configs/client-alice-ssl.properties
+kafka-topics.sh --list --bootstrap-server localhost:9094 --command-config configs/client-a2-ssl.properties
 
 ## Останавливаем брокер и ZooKeeper
