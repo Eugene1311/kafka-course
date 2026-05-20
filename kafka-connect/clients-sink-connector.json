@@ -1,0 +1,12 @@
+{
+  "name": "clients-sink-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": "1",
+    "topics": "postgres.clients",
+    "key.ignore": "true",
+    "connection.url": "http://elasticsearch:9200",
+    "connection.username": "elastic",
+    "connection.password": "password"
+  }
+}
