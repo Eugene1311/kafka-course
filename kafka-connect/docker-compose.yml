@@ -1,0 +1,124 @@
+name: kafka-course-kafka-connect
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:8.1.2
+    restart: on-failure
+    ports:
+      - 9092:9092
+      - 15083:5083
+      - 15084:15084
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_OPTS: >
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+      KAFKA_JMX_OPTS: >
+        -Dcom.sun.management.jmxremote.port=15084
+        -Dcom.sun.management.jmxremote.rmi.port=15084
+        -Dcom.sun.management.jmxremote.authenticate=false
+        -Dcom.sun.management.jmxremote.ssl=false
+        -Djava.rmi.server.hostname=localhost
+    volumes:
+      - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
+
+  connect:
+    image: confluentinc/cp-kafka-connect:8.1.2
+    depends_on:
+      - kafka
+    ports:
+      - 8083:8083
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "kafka:29092"
+      CONNECT_REST_PORT: "8083"
+      CONNECT_GROUP_ID: "local-connect"
+      CONNECT_CONFIG_STORAGE_TOPIC: "local-connect-config"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_TOPIC: "local-connect-offsets"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: "local-connect-status"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_PLUGIN_PATH: /usr/share/java/,/etc/kafka-connect/jars
+    volumes:
+      - ./connect:/etc/kafka-connect/jars
+      - ./data:/data
+
+  postgres:
+    image: postgres:17
+    hostname: postgres
+    restart: on-failure
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./data:/data
+      - ./postgres/custom-config.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+
+  elasticsearch:
+    image: elasticsearch:8.8.0
+    restart: on-failure
+    environment:
+      ELASTIC_PASSWORD: password
+      discovery.type: single-node
+      cluster.name: elasticsearch
+      xpack.security.enabled: true
+      xpack.security.autoconfiguration.enabled: true
+      cluster.routing.allocation.disk.watermark.low: 95%
+      cluster.routing.allocation.disk.watermark.high: 98%
+      cluster.routing.allocation.disk.watermark.flood_stage: 98%
+    ports:
+      - 9200:9200
+      - 9600:9600
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    volumes:
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    restart: on-failure
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+    depends_on:
+      - kafka
+
+  grafana:
+    image: grafana/grafana:13.0
+    restart: on-failure
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana_data:
