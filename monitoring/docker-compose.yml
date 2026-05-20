@@ -1,34 +1,99 @@
 name: kafka-course-monitoring
 
 services:
-  kafka:
+  kafka-1:
     image: confluentinc/cp-kafka:8.1.2
     restart: on-failure
     ports:
       - 9092:9092
-      - 5083:5083
-      - 5084:5084
+      - 15083:5083
+      - 15084:15084
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:29093,2@kafka-2:29093,3@kafka-3:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka-1:29092,CONTROLLER://kafka-1:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-1:29092,PLAINTEXT_HOST://localhost:9092'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_BROKER_RACK: "rack-1"
       KAFKA_OPTS: >
         -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
       KAFKA_JMX_OPTS: >
-        -Dcom.sun.management.jmxremote.port=5084
+        -Dcom.sun.management.jmxremote.port=15084
+        -Dcom.sun.management.jmxremote.rmi.port=15084
         -Dcom.sun.management.jmxremote.authenticate=false
         -Dcom.sun.management.jmxremote.ssl=false
         -Djava.rmi.server.hostname=localhost
-        -Dcom.sun.management.jmxremote.rmi.port=5084
+    volumes:
+      - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
+
+  kafka-2:
+    image: confluentinc/cp-kafka:8.1.2
+    restart: on-failure
+    ports:
+      - 9093:9093
+      - 25083:5083
+      - 25084:25084
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:29093,2@kafka-2:29093,3@kafka-3:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka-2:29092,CONTROLLER://kafka-2:29093,PLAINTEXT_HOST://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-2:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_BROKER_RACK: "rack-2"
+      KAFKA_OPTS: >
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+      KAFKA_JMX_OPTS: >
+        -Dcom.sun.management.jmxremote.port=25084
+        -Dcom.sun.management.jmxremote.rmi.port=25084
+        -Dcom.sun.management.jmxremote.authenticate=false
+        -Dcom.sun.management.jmxremote.ssl=false
+        -Djava.rmi.server.hostname=localhost
+    volumes:
+      - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
+
+  kafka-3:
+    image: confluentinc/cp-kafka:8.1.2
+    restart: on-failure
+    ports:
+      - 9094:9094
+      - 35083:5083
+      - 35084:35084
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:29093,2@kafka-2:29093,3@kafka-3:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka-3:29092,CONTROLLER://kafka-3:29093,PLAINTEXT_HOST://0.0.0.0:9094'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-3:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: '1'
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: '1'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_BROKER_RACK: "rack-3"
+      KAFKA_OPTS: >
+        -javaagent:/opt/prometheus-jmx-exporter/jmx_prometheus_javaagent-1.5.0.jar=5083:/opt/prometheus-jmx-exporter/kafka.yml
+      KAFKA_JMX_OPTS: >
+        -Dcom.sun.management.jmxremote.port=35084
+        -Dcom.sun.management.jmxremote.rmi.port=35084
+        -Dcom.sun.management.jmxremote.authenticate=false
+        -Dcom.sun.management.jmxremote.ssl=false
+        -Djava.rmi.server.hostname=localhost
     volumes:
       - ./prometheus-jmx-exporter:/opt/prometheus-jmx-exporter
 
@@ -37,7 +102,9 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - kafka
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       DYNAMIC_CONFIG_ENABLED: 'true'
     volumes:
@@ -51,7 +118,9 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
     depends_on:
-      - kafka
+      - kafka-1
+      - kafka-2
+      - kafka-3
 
   grafana:
     image: grafana/grafana:13.0

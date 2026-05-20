@@ -7,7 +7,11 @@ scrape_configs:
     scrape_interval: 10s
     honor_timestamps: true
     static_configs:
-      - targets: [ 'kafka:5083' ]
+      - targets: [
+        'kafka-1:5083',
+        'kafka-2:5083',
+        'kafka-3:5083'
+      ]
         labels:
           env: "dev"
           kafka_cluster_id: "MkU3OEVBNTcwNTJENDM2Qk"
