@@ -81,7 +81,7 @@ kafka-producer-perf-test --topic test --num-records 500000 --record-size 1024 --
 ## Set batch size to 1Mb
 ```shell
 kafka-producer-perf-test --topic test --num-records 500000 --record-size 1024 --throughput -1 \
- --producer-props batch.size=1073741824 bootstrap.servers=kafka-1:29092 --print-metrics
+ --producer-props batch.size=1048576 bootstrap.servers=kafka-1:29092 --print-metrics
 ```
 ## Set batch size to 500 Kb
 ```shell
