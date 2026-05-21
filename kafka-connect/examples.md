@@ -58,7 +58,7 @@ curl http://localhost:8083/connectors/clients-sink-elastic-connector/status | jq
 
 # MongoDB Sink Connector (https://debezium.io/documentation/reference/stable/connectors/mongodb-sink.html)
 ## Register connector
-// todo configure connector
+// todo configure connector - The MongoDB sink connector can consume only change events that originate from the Debezium connectors for the following relational databases
 ```shell
 curl -X POST --data-binary "@clients-sink-mongodb-connector.json" -H "Content-Type: application/json" http://localhost:8083/connectors | jq
 ```
