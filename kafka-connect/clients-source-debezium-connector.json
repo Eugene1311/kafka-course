@@ -7,8 +7,9 @@
     "database.user": "postgres",
     "database.password": "password",
     "database.dbname": "postgres",
-    "topic.prefix": "debezium.clients",
-    "table.include.list": "clients",
+    "topic.prefix": "debezium",
+    "table.include.list": "public.clients",
+    "plugin.name": "pgoutput",
     "errors.tolerance": "all",
     "errors.log.enable": "true",
     "errors.log.include.messages": "true"

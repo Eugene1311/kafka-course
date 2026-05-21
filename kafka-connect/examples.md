@@ -70,7 +70,6 @@ curl http://localhost:8083/connectors/clients-sink-mongodb-connector/status | jq
 
 # Debezium Postgres Source Connector  (https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
 ## Register connector
-// todo configure either Postgres transaction log or connector
 ```shell
 curl -X POST --data-binary "@clients-source-debezium-connector.json" -H "Content-Type: application/json" http://localhost:8083/connectors | jq
 ```
