@@ -1,0 +1,126 @@
+name: kafka-course-mirror-maker
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.8.8
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.8.8
+    restart: on-failure
+    ports:
+      - "19092:19092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9092,EXTERNAL://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+    depends_on:
+      - zookeeper
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.8.8
+    restart: on-failure
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:9092,EXTERNAL://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+    depends_on:
+      - zookeeper
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.8.8
+    restart: on-failure
+    ports:
+      - "39092:39092"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:9092,EXTERNAL://localhost:39092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+    depends_on:
+      - zookeeper
+
+  kafka1-m:
+    image: confluentinc/cp-kafka:7.8.8
+    restart: on-failure
+    ports:
+      - "19292:19292"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1-m:9093,2@kafka2-m:9093,3@kafka3-m:9093'
+      KAFKA_LISTENERS: 'INTERNAL://kafka1-m:9092,CONTROLLER://kafka1-m:9093,EXTERNAL://0.0.0.0:19292'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka1-m:9092,EXTERNAL://localhost:19292'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+    volumes:
+      - ./config:/tmp/config
+
+  kafka2-m:
+    image: confluentinc/cp-kafka:7.8.8
+    restart: on-failure
+    ports:
+      - "29292:29292"
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1-m:9093,2@kafka2-m:9093,3@kafka3-m:9093'
+      KAFKA_LISTENERS: 'INTERNAL://kafka2-m:9092,CONTROLLER://kafka2-m:9093,EXTERNAL://0.0.0.0:29292'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka2-m:9092,EXTERNAL://localhost:29292'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+
+  kafka3-m:
+    image: confluentinc/cp-kafka:7.8.8
+    restart: on-failure
+    ports:
+      - "39292:39292"
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1-m:9093,2@kafka2-m:9093,3@kafka3-m:9093'
+      KAFKA_LISTENERS: 'INTERNAL://kafka3-m:9092,CONTROLLER://kafka3-m:9093,EXTERNAL://0.0.0.0:39292'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka3-m:9092,EXTERNAL://localhost:39292'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+
+  akhq:
+    image: tchiotludo/akhq:0.27.1
+    ports:
+      - 8080:8080
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka1:9092"
+            docker-kafka-server-m:
+              properties:
+                bootstrap.servers: "kafka1-m:9092"
