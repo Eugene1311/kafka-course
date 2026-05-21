@@ -1,0 +1,12 @@
+{
+  "name": "clients-sink-mongodb-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mongodb.MongoDbSinkConnector",
+    "topics.regex": "clients",
+    "mongodb.connection.string": "mongodb://admin:password@mongodb:27017",
+    "sink.database": "test",
+    "errors.tolerance": "all",
+    "errors.log.enable": "true",
+    "errors.log.include.messages": "true"
+  }
+}

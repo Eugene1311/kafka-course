@@ -1,0 +1,16 @@
+{
+  "name": "clients-source-debezium-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "password",
+    "database.dbname": "postgres",
+    "topic.prefix": "debezium.clients",
+    "table.include.list": "clients",
+    "errors.tolerance": "all",
+    "errors.log.enable": "true",
+    "errors.log.include.messages": "true"
+  }
+}

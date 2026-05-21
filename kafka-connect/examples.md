@@ -46,13 +46,36 @@ values (1007, 'Averill', 'Fairtlough', 'Male', '4017957656366', 7389.39, '2022-1
 # ElasticSearch Sink Connector (https://docs.confluent.io/kafka-connectors/elasticsearch/current/overview.html)
 ## Register connector
 ```shell
-curl -X POST --data-binary "@clients-sink-connector.json" -H "Content-Type: application/json" http://localhost:8083/connectors | jq
+curl -X POST --data-binary "@clients-sink-elastic-connector.json" -H "Content-Type: application/json" http://localhost:8083/connectors | jq
 ```
 
 ## Check that connector have created successfully
 ```shell
-curl http://localhost:8083/connectors/clients-sink-connector/status | jq
+curl http://localhost:8083/connectors/clients-sink-elastic-connector/status | jq
 ```
 
-## Check 'clients' index inElasticSearch - http://localhost:9200/postgres.clients/_search?pretty
+## Check 'clients' index inElasticSearch - http://localhost:9200/clients/_search?pretty
 
+# MongoDB Sink Connector (https://debezium.io/documentation/reference/stable/connectors/mongodb-sink.html)
+## Register connector
+// todo configure connector
+```shell
+curl -X POST --data-binary "@clients-sink-mongodb-connector.json" -H "Content-Type: application/json" http://localhost:8083/connectors | jq
+```
+
+## Check that connector have created successfully
+```shell
+curl http://localhost:8083/connectors/clients-sink-mongodb-connector/status | jq
+```
+
+# Debezium Postgres Source Connector  (https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
+## Register connector
+// todo configure either Postgres transaction log or connector
+```shell
+curl -X POST --data-binary "@clients-source-debezium-connector.json" -H "Content-Type: application/json" http://localhost:8083/connectors | jq
+```
+
+## Check that connector have created successfully
+```shell
+curl http://localhost:8083/connectors/clients-source-debezium-connector/status | jq
+```
