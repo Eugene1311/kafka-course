@@ -74,7 +74,7 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
     volumes:
-      - ./config:/tmp/config
+      - ./config:/config
 
   kafka2-m:
     image: confluentinc/cp-kafka:7.8.8
