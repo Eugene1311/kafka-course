@@ -60,7 +60,7 @@ services:
       - ./data:/data
 
   postgres:
-    image: postgres:17
+    image: postgres:17-alpine
     hostname: postgres
     restart: on-failure
     ports:
