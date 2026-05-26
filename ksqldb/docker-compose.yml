@@ -135,7 +135,7 @@ services:
       - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
 
   postgres:
-    image: postgres:17
+    image: postgres:17-alpine
     hostname: postgres
     restart: on-failure
     ports:

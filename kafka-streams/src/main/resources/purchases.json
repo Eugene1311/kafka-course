@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "productName": "kettle",
+    "timestamp": "2022-01-29T06:01:18Z"
+  },
+  {
+    "id": 2,
+    "productName": "grill",
+    "timestamp": "2022-01-29T17:02:20Z"
+  },
+  {
+    "id": 3,
+    "productName": "toaster",
+    "timestamp": "2022-01-29T13:44:18Z"
+  },
+  {
+    "id": 4,
+    "productName": "hair dryer",
+    "timestamp": "2022-01-29T11:58:18Z"
+  }
+]

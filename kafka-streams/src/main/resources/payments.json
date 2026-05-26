@@ -1,0 +1,20 @@
+[
+  {
+    "id": 101,
+    "purchaseId": 1,
+    "status": "OK",
+    "timestamp": "2022-01-29T06:11:18Z"
+  },
+  {
+    "id": 103,
+    "purchaseId": 3,
+    "status": "OK",
+    "timestamp": "2022-01-29T13:54:18Z"
+  },
+  {
+    "id": 104,
+    "purchaseId": 4,
+    "status": "OK",
+    "timestamp": "2022-01-29T12:08:18Z"
+  }
+]
